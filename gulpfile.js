@@ -13,6 +13,7 @@ var webroot = "./wwwroot/";
 var paths = {
     js: webroot + "js/**/*.js",
     minJs: webroot + "js/**/*.min.js",
+    badJs: webroot + "js/scripts/*.js",
     pathJs: webroot + "js/",
     css: webroot + "css/**/*.css",
     minCss: webroot + "css/**/*.min.css",
@@ -30,7 +31,7 @@ gulp.task("clean:css", function (cb) {
 gulp.task("clean", ["clean:js", "clean:css"]);
 
 gulp.task("min:js", function () {
-    return gulp.src([paths.js, "!" + paths.minJs], { base: "." })
+    return gulp.src([paths.js, "!" + paths.minJs, "!" + paths.badJs], { base: "." })
         .pipe(rename({
             suffix: '.min'
         }))

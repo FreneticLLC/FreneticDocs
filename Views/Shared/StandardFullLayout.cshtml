@@ -8,6 +8,9 @@
     <meta charset="utf-8" />
     <title>@ViewData["Title"] | @Title</title>
     <link rel="stylesheet" href="/css/DocsBasic.min.css?vary=1" type="text/css" />
+    <link rel="stylesheet" href="/css/shCoreMidnight.min.css?vary=1" type="text/css" />
+    <link rel="stylesheet" href="/css/shThemeMidnight.min.css?vary=1" type="text/css" />
+    <script type="text/javascript" src="/js/scripts/shCore.js"></script>
 </head>
 <body>
     <div class="container">
@@ -33,5 +36,115 @@
         Page Retrieved: <code>@utcnow</code>
         <br>Standard URL to this page: <a href="@adaptedurl">@adaptedurl</a>
     </div>
+
+<!-- BEGIN HIGHLIGHT FOOTER -->
+
+<script type="text/javascript">
+var tbrushes = [['csharp', '/js/scripts/shBrushCSharp.js'],
+				['dscript', '/js/scripts/shBrushdScript.js'],
+				['diff' ,'/js/scripts/shBrushDiff.js'],
+				['java' ,'/js/scripts/shBrushJava.js'],
+				['glsl' ,'/js/scripts/shBrushGLSL.js'],
+				['text' ,'/js/scripts/shBrushPlain.js']];
+for (var i = 0; i < tbrushes.length; i++)
+{
+	if (document.getElementsByClassName(tbrushes[i][0]).length > 0)
+	{
+		var js = document.createElement('script');
+		js.type = 'text/javascript';
+		js.src = tbrushes[i][1];
+		document.body.appendChild(js);
+	}
+}
+SyntaxHighlighter.all();
+setTimeout(function () {
+var tagmarks = document.getElementsByClassName('string2');
+for (var i = 0; i < tagmarks.length; i++)
+{
+	var outc = '';
+	var spans = 0;
+	var inc = tagmarks[i].innerHTML.replace("&lt;", "\u0001").replace("&gt;", "\u0002");
+	var in_special = false;
+	for (var c = 0; c < inc.length; c++)
+	{
+		var cc = inc.charAt(c);
+		if (cc == '\u0001')
+		{
+			outc += '<code class="dscript variable3">&lt;';
+			spans++;
+		}
+		else if (cc == '\u0002' && spans > 0)
+		{
+			outc += '&gt;</code>';
+			spans--;
+		}
+		else if (cc == '\u0002')
+		{
+			outc += "&gt;";
+		}
+		else
+		{
+			outc += cc;
+		}
+	}
+	while (spans > 0)
+	{
+		outc += '</code>';
+		spans--;
+	}
+	tagmarks[i].innerHTML = outc;
+}
+
+tagmarks = document.getElementsByClassName('variable3');
+for (var i = 0; i < tagmarks.length; i++)
+{
+	var outc = '';
+	var spans = 0;
+	var inc = tagmarks[i].innerHTML;
+	var in_special = false;
+	for (var c = 0; c < inc.length; c++)
+	{
+		var cc = inc.charAt(c);
+		if (cc == '[')
+		{
+			outc += '<code class="dscript variable2">[';
+			spans++;
+		}
+		else if (cc == ']' && spans > 0)
+		{
+			outc += ']</code>';
+			spans--;
+		}
+		else if (cc == '%')
+		{
+			in_special = !in_special;
+			if (in_special)
+			{
+				spans++;
+				outc += '<code class="dscript variable">%';
+			}
+			else
+			{
+				spans--;
+				outc += '%</code>';
+			}
+		}
+		else
+		{
+			outc += cc;
+		}
+	}
+	while (spans > 0)
+	{
+		outc += '</code>';
+		spans--;
+	}
+	tagmarks[i].innerHTML = outc;
+}
+}, 1000);
+</script>
+
+<!-- END HIGHLIGHT FOOTER -->
+
 </body>
 </html>

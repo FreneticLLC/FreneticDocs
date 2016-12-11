@@ -44,12 +44,7 @@ namespace FreneticDocs.Models
 
         public HtmlString GetDescriptionMultiLine()
         {
-            return new HtmlString(Escape(Description).Replace("\n", "\n<br>"));
-        }
-
-        public HtmlString GetExampleMultiLine(int ind)
-        {
-            return new HtmlString(Escape(Examples[ind]).Replace("\n", "\n<br>"));
+            return new HtmlString(Escape(Description.Trim()).Replace("\n", "\n<br>"));
         }
 
         public List<string> Examples;

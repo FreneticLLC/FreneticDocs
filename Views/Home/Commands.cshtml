@@ -4,6 +4,7 @@
 
 The system recognizes <code>@DocsStatic.Commands.Count</code> commands!
 @{
+    string hl = DocsStatic.Config["highlight"];
     foreach (ScriptCommand cmd in DocsStatic.Commands)
     {
         @DocsStatic.SECTION_SEPARATOR
@@ -18,7 +19,7 @@ The system recognizes <code>@DocsStatic.Commands.Count</code> commands!
             <tr><td class="small">Full Description</td><td>@cmd.GetDescriptionMultiLine()</td></tr>
             @for (int i = 0; i < cmd.Examples.Count; i++)
             {
-                <tr><td class="small">Example</td><td><pre>@cmd.Examples[i]</pre></td></tr>
+                <tr><td class="small">Example</td><td><pre class="brush: @hl">@cmd.Examples[i]</pre></td></tr>
             }
         </table>
     }

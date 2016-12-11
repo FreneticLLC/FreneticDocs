@@ -133,6 +133,7 @@ code
 {
     display: inline-block;
 }
+/*
 pre
 {
     background-color: #222222;
@@ -141,6 +142,7 @@ pre
     border-radius: 3px;
     overflow-x: auto;
 }
+*/
 table.meta
 {
     position: relative;
