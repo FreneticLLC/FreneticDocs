@@ -53,6 +53,18 @@ namespace FreneticDocs.Models
 
         public string Addon;
 
+        public List<string> Warnings;
+
+        public List<string> Notes;
+
+        public List<string> Tags;
+
+        public List<string> Saves;
+
+        public static string[] CMDBits = new string[] {
+            "name", "arguments", "short", "updated", "group", "procedural", "addon", "minimum", "maximum", "description", "example", "warning", "note", "tag", "save"
+        };
+
         public ScriptCommand(Dictionary<string, List<StringBuilder>> opts, string source)
         {
             Name = opts["name"][0].ToString();
@@ -70,7 +82,46 @@ namespace FreneticDocs.Models
             {
                 Examples.Add(sb.ToString());
             }
+            Warnings = new List<string>();
+            if (opts.ContainsKey("warning"))
+            {
+                foreach (StringBuilder sb in opts["warning"])
+                {
+                    Warnings.Add(sb.ToString());
+                }
+            }
+            Notes = new List<string>();
+            if (opts.ContainsKey("note"))
+            {
+                foreach (StringBuilder sb in opts["note"])
+                {
+                    Notes.Add(sb.ToString());
+                }
+            }
+            Saves = new List<string>();
+            if (opts.ContainsKey("save"))
+            {
+                foreach (StringBuilder sb in opts["save"])
+                {
+                    Saves.Add(sb.ToString());
+                }
+            }
+            Tags = new List<string>();
+            if (opts.ContainsKey("tag"))
+            {
+                foreach (StringBuilder sb in opts["tag"])
+                {
+                    Tags.Add(sb.ToString());
+                }
+            }
             SourceLocation = source;
+            foreach (string key in opts.Keys)
+            {
+                if (!CMDBits.Contains(key))
+                {
+                    Console.WriteLine("Bad command meta part: " + key + " for " + Name + " in " + source);
+                }
+            }
         }
     }
 }

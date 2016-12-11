@@ -133,16 +133,6 @@ code
 {
     display: inline-block;
 }
-/*
-pre
-{
-    background-color: #222222;
-    color: #FFFFFF;
-    border: 1px solid #999900;
-    border-radius: 3px;
-    overflow-x: auto;
-}
-*/
 table.meta
 {
     position: relative;
@@ -167,4 +157,10 @@ table.meta tr td
     padding: 1px;
     min-width: 150px;
     word-wrap: break-word;
+}
+.meta_warning
+{
+    color: #FF7777;
+    font-size: 17px;
+    font-weight: bold;
 }

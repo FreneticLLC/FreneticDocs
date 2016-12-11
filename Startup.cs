@@ -15,9 +15,10 @@ namespace FreneticDocs
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public DocsMeta LoadMeta()
         {
-            Console.WriteLine("Load system...");
+            Console.WriteLine("Load meta...");
+            DocsMeta meta = new DocsMeta();
             DocsStatic.Config.Clear();
             string[] lines = File.ReadAllText("./config/docs.cfg").Replace('\r', '\n').Split('\n');
             foreach (string l in lines)
@@ -57,21 +58,21 @@ namespace FreneticDocs
             foreach (LoadSequencer lds in ldss)
             {
                 lds.MRE.WaitOne();
-                DocsStatic.AddDocumentationSet(lds.Docs.ToArray(), lds.ID);
+                meta.AddDocumentationSet(lds.Docs.ToArray(), lds.ID);
             }
 
             Console.WriteLine("Ready!");
+            return meta;
+        }
 
-            var builder = new ConfigurationBuilder()
+        public Startup(IHostingEnvironment env)
+        {
+            DocsStatic.Meta = LoadMeta();
+
+            IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets();
-            }
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();

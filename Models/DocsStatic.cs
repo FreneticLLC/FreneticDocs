@@ -39,9 +39,16 @@ namespace FreneticDocs.Models
 
         public static Encoding Enc = new UTF8Encoding(false);
 
-        public static List<ScriptCommand> Commands = new List<ScriptCommand>();
+        public static DocsMeta Meta = new DocsMeta();
+    }
 
-        public static void AddDocumentationSet(string[] docs, string source)
+    public class DocsMeta
+    {
+        public List<ScriptCommand> Commands = new List<ScriptCommand>();
+
+        public List<ScriptTag> Tags = new List<ScriptTag>();
+
+        public void AddDocumentationSet(string[] docs, string source)
         {
             Console.WriteLine("Begin parsing set: " + source);
             for (int i = 0; i < docs.Length; i++)
@@ -71,6 +78,10 @@ namespace FreneticDocs.Models
                                 if (type == "command")
                                 {
                                     Commands.Add(new ScriptCommand(opts, linesource));
+                                }
+                                else if (type == "tag")
+                                {
+                                    Tags.Add(new ScriptTag(opts, linesource));
                                 }
                                 else
                                 {

@@ -1,0 +1,45 @@
+@{
+    ViewData["Title"] = "Tags";
+}
+
+The system recognizes <code>@DocsStatic.Meta.Tags.Count</code> commands!
+@{
+    IEnumerable<ScriptTag> tags = DocsStatic.Meta.Tags.OrderBy((c) => c.Name);
+    string prev = "";
+    foreach (ScriptTag tag in tags)
+    {
+        string tobj = tag.Name.Split('.')[0];
+        if (tobj != prev)
+        {
+            <hr>
+        }
+        prev = tobj;
+        <a href="#tag_@tag.Name">@tag.Name</a>
+    }
+    string hl = DocsStatic.Config["highlight"];
+    foreach (ScriptTag tag in tags)
+    {
+        @DocsStatic.SECTION_SEPARATOR
+        <a id="tag_@tag.Name" href="#tag_@tag.Name">@tag.Name</a>
+        <table class="meta">
+            <tr><td class="small">@tag.Group Tag</td><td>@tag.Name</td></tr>
+            <tr><td class="small">Source</td><td>@tag.SourceLocation</td></tr>
+            <tr><td class="small">Required Addon(s)</td><td>@tag.Addon</td></tr>
+            <tr><td class="small">Last Updated</td><td>@tag.Updated</td></tr>
+            <tr><td class="small">Returns</td><td>@tag.Returns</td></tr>
+            <tr><td class="small">ReturnType</td><td>@tag.ReturnType</td></tr>
+            @for (int i = 0; i < tag.Examples.Count; i++)
+            {
+                <tr><td class="small">Example</td><td>@tag.Examples[i]</td></tr>
+            }
+            @for (int i = 0; i < tag.Notes.Count; i++)
+            {
+                <tr><td class="small">Note</td><td>@tag.Notes[i]</td></tr>
+            }
+            @for (int i = 0; i < tag.Warnings.Count; i++)
+            {
+                <tr><td class="small">Warning</td><td><span class="meta_warning">@tag.Warnings[i]</span></td></tr>
+            }
+        </table>
+    }
+}

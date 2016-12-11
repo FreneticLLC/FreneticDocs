@@ -1,19 +1,19 @@
 @{
-    ViewData["Title"] = "Main Page";
+    ViewData["Title"] = "Commands";
 }
 
-The system recognizes <code>@DocsStatic.Commands.Count</code> commands!
+The system recognizes <code>@DocsStatic.Meta.Commands.Count</code> commands!
 @{
-    IEnumerable<ScriptCommand> cmds = DocsStatic.Commands.OrderBy((c) => c.Name).OrderBy((c) => c.Group);
+    IEnumerable<ScriptCommand> cmds = DocsStatic.Meta.Commands.OrderBy((c) => c.Name).OrderBy((c) => c.Group);
     foreach (ScriptCommand cmd in cmds)
     {
-        <span class="potato_unused"><br><a href="#@cmd.Name">@cmd.Name</a> (@cmd.Group)</span>
+        <span class="potato_unused"><br><a href="#cmd_@cmd.Name">@cmd.Name</a> (@cmd.Group)</span>
     }
     string hl = DocsStatic.Config["highlight"];
     foreach (ScriptCommand cmd in cmds)
     {
         @DocsStatic.SECTION_SEPARATOR
-        <a id="@cmd.Name" href="#@cmd.Name">@cmd.Name</a>
+        <a id="cmd_@cmd.Name" href="#cmd_@cmd.Name">@cmd.Name</a>
         <table class="meta">
             <tr><td class="small">@cmd.Group Command</td><td>@cmd.Name</td></tr>
             <tr><td class="small">Source</td><td>@cmd.SourceLocation</td></tr>
@@ -22,11 +22,27 @@ The system recognizes <code>@DocsStatic.Commands.Count</code> commands!
             <tr><td class="small">Argument Limits</td><td>From @cmd.Minimum to @cmd.Maximum arguments.</td></tr>
             <tr><td class="small">Short Description</td><td>@cmd.Short</td></tr>
             <tr><td class="small">Last Updated</td><td>@cmd.Updated</td></tr>
-            <tr><td class="small">Is <a href="/Home/Explanations/Procedural">Procedural</a>?</td><td>@cmd.Procedural</td></tr>
+            <tr><td class="small">Is <a href="/Home/Explanations?search=Procedural">Procedural</a>?</td><td>@cmd.Procedural</td></tr>
             <tr><td class="small">Full Description</td><td>@cmd.GetDescriptionMultiLine()</td></tr>
+            @for (int i = 0; i < cmd.Tags.Count; i++)
+            {
+                <tr><td class="small">Tag</td><td>@cmd.Tags[i]</td></tr>
+            }
+            @for (int i = 0; i < cmd.Saves.Count; i++)
+            {
+                <tr><td class="small">Save</td><td>@cmd.Saves[i]</td></tr>
+            }
             @for (int i = 0; i < cmd.Examples.Count; i++)
             {
                 <tr><td class="small">Example</td><td><pre class="brush: @hl">@cmd.Examples[i]</pre></td></tr>
+            }
+            @for (int i = 0; i < cmd.Notes.Count; i++)
+            {
+                <tr><td class="small">Note</td><td>@cmd.Notes[i]</td></tr>
+            }
+            @for (int i = 0; i < cmd.Warnings.Count; i++)
+            {
+                <tr><td class="small">Warning</td><td><span class="meta_warning">@cmd.Warnings[i]</span></td></tr>
             }
         </table>
     }
