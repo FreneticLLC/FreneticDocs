@@ -51,6 +51,8 @@ namespace FreneticDocs.Models
 
         public string SourceLocation;
 
+        public string Addon;
+
         public ScriptCommand(Dictionary<string, List<StringBuilder>> opts, string source)
         {
             Name = opts["name"][0].ToString();
@@ -59,6 +61,7 @@ namespace FreneticDocs.Models
             Updated = opts["updated"][0].ToString();
             Group = opts["group"][0].ToString();
             Procedural = opts.ContainsKey("procedural") ? opts["procedural"][0].ToString() : "false";
+            Addon = opts.ContainsKey("addon") ? opts["addon"][0].ToString() : "None";
             Minimum = opts["minimum"][0].ToString();
             Maximum = opts["maximum"][0].ToString();
             Description = opts["description"][0].ToString();

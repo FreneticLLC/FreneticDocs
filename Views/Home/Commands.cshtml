@@ -4,13 +4,20 @@
 
 The system recognizes <code>@DocsStatic.Commands.Count</code> commands!
 @{
+    IEnumerable<ScriptCommand> cmds = DocsStatic.Commands.OrderBy((c) => c.Name).OrderBy((c) => c.Group);
+    foreach (ScriptCommand cmd in cmds)
+    {
+        <span class="potato_unused"><br><a href="#@cmd.Name">@cmd.Name</a> (@cmd.Group)</span>
+    }
     string hl = DocsStatic.Config["highlight"];
-    foreach (ScriptCommand cmd in DocsStatic.Commands)
+    foreach (ScriptCommand cmd in cmds)
     {
         @DocsStatic.SECTION_SEPARATOR
+        <a id="@cmd.Name" href="#@cmd.Name">@cmd.Name</a>
         <table class="meta">
             <tr><td class="small">@cmd.Group Command</td><td>@cmd.Name</td></tr>
             <tr><td class="small">Source</td><td>@cmd.SourceLocation</td></tr>
+            <tr><td class="small">Required Addon(s)</td><td>@cmd.Addon</td></tr>
             <tr><td class="small">Arguments</td><td>@cmd.Arguments</td></tr>
             <tr><td class="small">Argument Limits</td><td>From @cmd.Minimum to @cmd.Maximum arguments.</td></tr>
             <tr><td class="small">Short Description</td><td>@cmd.Short</td></tr>
