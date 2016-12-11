@@ -52,7 +52,7 @@ namespace FreneticDocs.Models
                 if (cline.StartsWith("// <--[") && cline.EndsWith("]"))
                 {
                     string type = cline.Substring("// <--[".Length, cline.Length - "// <--[]".Length);
-                    Dictionary<string, StringBuilder> opts = new Dictionary<string, StringBuilder>();
+                    Dictionary<string, List<StringBuilder>> opts = new Dictionary<string, List<StringBuilder>>();
                     StringBuilder current = new StringBuilder();
                     while ((++i) < docs.Length)
                     {
@@ -70,7 +70,7 @@ namespace FreneticDocs.Models
                             {
                                 if (type == "command")
                                 {
-                                    Commands.Add(new ScriptCommand(opts, source + ": " + linesource));
+                                    Commands.Add(new ScriptCommand(opts, linesource));
                                 }
                                 else
                                 {
@@ -87,7 +87,14 @@ namespace FreneticDocs.Models
                         {
                             string[] d = sub_cline.Substring("// @".Length).Split(new char[] { ' ' }, 2);
                             current = new StringBuilder();
-                            opts[d[0].ToLower()] = current;
+                            if (opts.ContainsKey(d[0].ToLowerInvariant()))
+                            {
+                                opts[d[0].ToLowerInvariant()].Add(current);
+                            }
+                            else
+                            {
+                                opts[d[0].ToLowerInvariant()] = new List<StringBuilder>() { current };
+                            }
                             if (d.Length > 1)
                             {
                                 current.Append(d[1]);
@@ -95,7 +102,7 @@ namespace FreneticDocs.Models
                         }
                         else 
                         {
-                            current.Append(sub_cline.Substring("// ".Length));
+                            current.Append("\n" + sub_cline.Substring("// ".Length));
                         }
                     }
                 }

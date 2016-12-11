@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Main Page";
+}
+
+The system recognizes <code>@DocsStatic.Commands.Count</code> commands!
+@{
+    foreach (ScriptCommand cmd in DocsStatic.Commands)
+    {
+        @DocsStatic.SECTION_SEPARATOR
+        <table class="meta">
+            <tr><td class="small">@cmd.Group Command</td><td>@cmd.Name</td></tr>
+            <tr><td class="small">Source</td><td>@cmd.SourceLocation</td></tr>
+            <tr><td class="small">Arguments</td><td>@cmd.Arguments</td></tr>
+            <tr><td class="small">Argument Limits</td><td>From @cmd.Minimum to @cmd.Maximum arguments.</td></tr>
+            <tr><td class="small">Short Description</td><td>@cmd.Short</td></tr>
+            <tr><td class="small">Last Updated</td><td>@cmd.Updated</td></tr>
+            <tr><td class="small">Is <a href="/Home/Explanations/Procedural">Procedural</a>?</td><td>@cmd.Procedural</td></tr>
+            <tr><td class="small">Full Description</td><td>@cmd.GetDescriptionMultiLine()</td></tr>
+            @for (int i = 0; i < cmd.Examples.Count; i++)
+            {
+                <tr><td class="small">Example</td><td><pre>@cmd.Examples[i]</pre></td></tr>
+            }
+        </table>
+    }
+}

@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace FreneticDocs.Models
 {
@@ -18,11 +21,57 @@ namespace FreneticDocs.Models
     {
         public string Name;
 
+        public string Arguments;
+
+        public string Short;
+
+        public string Updated;
+
+        public string Group;
+
+        public string Procedural;
+
+        public string Minimum;
+
+        public string Maximum;
+
+        public string Description;
+
+        public string Escape(string input)
+        {
+            return input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
+        }
+
+        public HtmlString GetDescriptionMultiLine()
+        {
+            return new HtmlString(Escape(Description).Replace("\n", "\n<br>"));
+        }
+
+        public HtmlString GetExampleMultiLine(int ind)
+        {
+            return new HtmlString(Escape(Examples[ind]).Replace("\n", "\n<br>"));
+        }
+
+        public List<string> Examples;
+
         public string SourceLocation;
 
-        public ScriptCommand(Dictionary<string, StringBuilder> opts, string source)
+        public ScriptCommand(Dictionary<string, List<StringBuilder>> opts, string source)
         {
-            Name = opts["name"].ToString();
+            Name = opts["name"][0].ToString();
+            Arguments = opts["arguments"][0].ToString();
+            Short = opts["short"][0].ToString();
+            Updated = opts["updated"][0].ToString();
+            Group = opts["group"][0].ToString();
+            Procedural = opts.ContainsKey("procedural") ? opts["procedural"][0].ToString() : "false";
+            Minimum = opts["minimum"][0].ToString();
+            Maximum = opts["maximum"][0].ToString();
+            Description = opts["description"][0].ToString();
+            Examples = new List<string>();
+            foreach (StringBuilder sb in opts["example"])
+            {
+                Examples.Add(sb.ToString());
+            }
             SourceLocation = source;
         }
     }
