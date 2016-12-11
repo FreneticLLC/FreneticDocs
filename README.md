@@ -19,7 +19,8 @@ Early development. Nothing is remotely ready to use!
 - Create `config/docs.cfg` based on `sample_config.cfg` and configure it.
 - Install .NET Core CLI.
 - Install NPM (Node Package Manager).
-- Install NPM package `gulp` and related (at a command line, `npm install gulp rimraf gulp-concat gulp-cssmin gulp-uglify gulp-rename`)
+- Install NPM package `gulp` and related (at a command line, `npm install gulp rimraf gulp-concat gulp-cssmin gulp-uglify gulp-rename`).
+- Run `dotnet restore`.
 - Run `development.bat` or `start.bat`.
 - Connect to server address (or `localhost`) at port `8051`.
 - That's all, folks!

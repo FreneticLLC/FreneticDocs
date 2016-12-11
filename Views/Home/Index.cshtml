@@ -3,5 +3,16 @@
 }
 
 Hello!
+<br>Soon, there will be a documentation home page here!
 <br>
-Soon, there will be a documentation home page here!
+<br>Just so you know, here are some commands this system recognizes...
+<br>@DocsStatic.Commands.Count
+<br>
+@{
+    string res = "";
+    foreach (ScriptCommand cmd in DocsStatic.Commands)
+    {
+        res += cmd.Name + ", ";
+    }
+}
+@res

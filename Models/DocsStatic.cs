@@ -38,5 +38,68 @@ namespace FreneticDocs.Models
         }
 
         public static Encoding Enc = new UTF8Encoding(false);
+
+        public static List<ScriptCommand> Commands = new List<ScriptCommand>();
+
+        public static void AddDocumentationSet(string[] docs, string source)
+        {
+            Console.WriteLine("Begin parsing set: " + source);
+            for (int i = 0; i < docs.Length; i++)
+            {
+                string[] split = docs[i].Split(new char[] { '?' }, 2);
+                string linesource = source + " at: " + split[0];
+                string cline = split[1];
+                if (cline.StartsWith("// <--[") && cline.EndsWith("]"))
+                {
+                    string type = cline.Substring("// <--[".Length, cline.Length - "// <--[]".Length);
+                    Dictionary<string, StringBuilder> opts = new Dictionary<string, StringBuilder>();
+                    StringBuilder current = new StringBuilder();
+                    while ((++i) < docs.Length)
+                    {
+                        string[] sub_split = docs[i].Split(new char[] { '?' }, 2);
+                        string sub_linesource = source + " at: " + sub_split[0];
+                        string sub_cline = sub_split[1];
+                        if (sub_cline.StartsWith("// <--[") && sub_cline.EndsWith("]"))
+                        {
+                            Console.WriteLine("Meta-within-meta in " + sub_linesource + " competing with meta in " + linesource);
+                            break;
+                        }
+                        if (sub_cline.Equals("// -->"))
+                        {
+                            try
+                            {
+                                if (type == "command")
+                                {
+                                    Commands.Add(new ScriptCommand(opts, source + ": " + linesource));
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Presently unknown meta type: '" + type + "' in " + linesource);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Meta can't parse right in " + linesource + "::: " + ex.ToString());
+                            }
+                            break;
+                        }
+                        if (sub_cline.StartsWith("// @"))
+                        {
+                            string[] d = sub_cline.Substring("// @".Length).Split(new char[] { ' ' }, 2);
+                            current = new StringBuilder();
+                            opts[d[0].ToLower()] = current;
+                            if (d.Length > 1)
+                            {
+                                current.Append(d[1]);
+                            }
+                        }
+                        else 
+                        {
+                            current.Append(sub_cline.Substring("// ".Length));
+                        }
+                    }
+                }
+            }
+        }
     }
 }
