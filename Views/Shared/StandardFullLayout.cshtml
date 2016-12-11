@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+@{
+    DocsInit init = (DocsInit)ViewData["init"];
+    string Title = DocsStatic.Config["title"];
+}
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] | @Title</title>
+    <link rel="stylesheet" href="/css/DocsBasic.min.css?vary=1" type="text/css" />
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="left_header">
+                <a href="/">@Title
+                <br><img src="/images/core/docs_logo.png" /></a>
+            </div>
+            <!-- right_header would be here... IF WE HAD ONE! -->
+        </div>
+        <div class="content">
+            <div class="section">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        @{
+            string utcnow = DocsStatic.DateNow();
+            string mainurl = DocsStatic.Config["mainurl"];
+            string adaptedurl = mainurl + (init == null ? "/" : init.Request.Path.ToString());
+        }
+        Page Retrieved: <code>@utcnow</code>
+        <br>Standard URL to this page: <a href="@adaptedurl">@adaptedurl</a>
+    </div>
+</body>
+</html>
