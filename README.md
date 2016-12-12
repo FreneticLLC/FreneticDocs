@@ -12,7 +12,7 @@ Licensing is likely to change in the future.
 
 ### Project Status
 
-Early development. Nothing is remotely ready to use!
+Early development. Commands and tags pages are ready!
 
 ### Setup
 
