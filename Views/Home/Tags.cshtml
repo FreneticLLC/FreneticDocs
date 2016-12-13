@@ -2,7 +2,7 @@
     ViewData["Title"] = "Tags";
 }
 
-The system recognizes <code>@DocsStatic.Meta.Tags.Count</code> commands!
+The system recognizes <code>@DocsStatic.Meta.Tags.Count</code> tags!
 @{
     IEnumerable<ScriptTag> tags = DocsStatic.Meta.Tags.OrderBy((c) => c.Name);
     string prev = "";
