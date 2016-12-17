@@ -24,3 +24,7 @@ Early development. Commands and tags pages are ready!
 - Run `development.bat` or `start.bat`.
 - Connect to server address (or `localhost`) at port `8051`.
 - That's all, folks!
+
+### Editing
+
+- Primary editing should be done in VS Code. Requires OmniSharp-VS Code 1.6.0-beta6 or higher.
