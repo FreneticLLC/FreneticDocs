@@ -1,5 +1,7 @@
 @{
     ViewData["Title"] = "Tags";
+    DocsInit init = (DocsInit)ViewData["init"];
+    string search = init.Request.Query["search"].FirstOrDefault() ?? "";
 }
 
 The system recognizes <code>@DocsStatic.Meta.Tags.Count</code> tags!
@@ -8,6 +10,10 @@ The system recognizes <code>@DocsStatic.Meta.Tags.Count</code> tags!
     string prev = "";
     foreach (ScriptTag tag in tags)
     {
+        if (!tag.Name.Contains(search))
+        {
+            continue;
+        }
         string tobj = tag.Name.Split('.')[0];
         if (tobj != prev)
         {
@@ -19,6 +25,10 @@ The system recognizes <code>@DocsStatic.Meta.Tags.Count</code> tags!
     string hl = DocsStatic.Config["highlight"];
     foreach (ScriptTag tag in tags)
     {
+        if (!tag.Name.Contains(search))
+        {
+            continue;
+        }
         @DocsStatic.SECTION_SEPARATOR
         <a id="tag_@tag.Name" href="#tag_@tag.Name">@tag.Name</a>
         <table class="meta">
