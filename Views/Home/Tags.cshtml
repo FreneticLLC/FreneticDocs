@@ -14,7 +14,7 @@ Search: <input type="text" id="boxysearchy" placeholder="Search...">
     string prev = "";
     foreach (ScriptTag tag in tags)
     {
-        if (!tag.Name.Contains(search))
+        if (!tag.Name.ToLowerInvariant().Contains(search))
         {
             continue;
         }
@@ -29,7 +29,7 @@ Search: <input type="text" id="boxysearchy" placeholder="Search...">
     string hl = DocsStatic.Config["highlight"];
     foreach (ScriptTag tag in tags)
     {
-        if (!tag.Name.Contains(search))
+        if (!tag.Name.ToLowerInvariant().Contains(search))
         {
             continue;
         }

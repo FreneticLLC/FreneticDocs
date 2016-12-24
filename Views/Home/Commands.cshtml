@@ -13,7 +13,7 @@ Search: <input type="text" id="boxysearchy" placeholder="Search...">
     string prev = "";
     foreach (ScriptCommand cmd in cmds)
     {
-        if (cmd.Name.Contains(search))
+        if (cmd.Name.ToLowerInvariant().Contains(search))
         {
             if (cmd.Group != prev)
             {
