@@ -5,6 +5,9 @@
 }
 
 The system recognizes <code>@DocsStatic.Meta.Commands.Count</code> commands!
+<hr>
+Search: <input type="text" id="boxysearchy" placeholder="Search...">
+<script type="text/javascript">document.getElementById('boxysearchy').addEventListener('keydown', function(e) { if (!e)  { var e = window.event; } if (e.keyCode == 13) { document.location.href = '?search=' + document.getElementById('boxysearchy').value; } }, false);</script>
 @{
     IEnumerable<ScriptCommand> cmds = DocsStatic.Meta.Commands.OrderBy((c) => c.Name).OrderBy((c) => c.Group);
     string prev = "";
