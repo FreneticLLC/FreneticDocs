@@ -2,6 +2,7 @@
     ViewData["Title"] = "Commands";
     DocsInit init = (DocsInit)ViewData["init"];
     string search = init.Request.Query["search"].FirstOrDefault() ?? "";
+    search = search.ToLowerInvariant();
 }
 
 The system recognizes <code>@DocsStatic.Meta.Commands.Count</code> commands!

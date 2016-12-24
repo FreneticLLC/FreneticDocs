@@ -2,6 +2,7 @@
     ViewData["Title"] = "Tags";
     DocsInit init = (DocsInit)ViewData["init"];
     string search = init.Request.Query["search"].FirstOrDefault() ?? "";
+    search = search.ToLowerInvariant();
 }
 
 The system recognizes <code>@DocsStatic.Meta.Tags.Count</code> tags!
