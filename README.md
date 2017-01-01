@@ -14,6 +14,8 @@ Licensing is likely to change in the future.
 
 Early development. Commands and tags pages are ready!
 
+These docs are for legacy (comment structured) docs!
+
 ### Setup
 
 - Create `config/docs.cfg` based on `sample_config.cfg` and configure it.

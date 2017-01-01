@@ -38,5 +38,11 @@ namespace FreneticDocs.Controllers
             ViewData["init"] = new DocsInit(Request, Response);
             return View();
         }
+
+        public IActionResult Events()
+        {
+            ViewData["init"] = new DocsInit(Request, Response);
+            return View();
+        }
     }
 }

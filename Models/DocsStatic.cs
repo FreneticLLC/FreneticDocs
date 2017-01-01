@@ -48,6 +48,8 @@ namespace FreneticDocs.Models
 
         public List<ScriptTag> Tags = new List<ScriptTag>();
 
+        public List<ScriptEvent> Events = new List<ScriptEvent>();
+
         public void AddDocumentationSet(string[] docs, string source)
         {
             Console.WriteLine("Begin parsing set: " + source);
@@ -82,6 +84,10 @@ namespace FreneticDocs.Models
                                 else if (type == "tag")
                                 {
                                     Tags.Add(new ScriptTag(opts, linesource));
+                                }
+                                else if (type == "event")
+                                {
+                                    Events.Add(new ScriptEvent(opts, linesource));
                                 }
                                 else
                                 {
