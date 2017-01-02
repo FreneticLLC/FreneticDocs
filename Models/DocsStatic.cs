@@ -50,6 +50,8 @@ namespace FreneticDocs.Models
 
         public List<ScriptEvent> Events = new List<ScriptEvent>();
 
+        public List<ScriptExplanation> Explanations = new List<ScriptExplanation>();
+
         public void AddDocumentationSet(string[] docs, string source)
         {
             Console.WriteLine("Begin parsing set: " + source);
@@ -88,6 +90,10 @@ namespace FreneticDocs.Models
                                 else if (type == "event")
                                 {
                                     Events.Add(new ScriptEvent(opts, linesource));
+                                }
+                                else if (type == "explanation")
+                                {
+                                    Explanations.Add(new ScriptExplanation(opts, linesource));
                                 }
                                 else
                                 {

@@ -80,7 +80,7 @@ namespace FreneticDocs.Models
             {
                 if (!TAGBits.Contains(key))
                 {
-                    Console.WriteLine("Bad command meta part: " + key + " for " + Name + " in " + source);
+                    Console.WriteLine("Bad tag meta part: " + key + " for " + Name + " in " + source);
                 }
             }
         }

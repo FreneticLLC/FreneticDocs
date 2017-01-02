@@ -1,0 +1,51 @@
+@{
+    ViewData["Title"] = "Explanations";
+    DocsInit init = (DocsInit)ViewData["init"];
+    string search = init.Request.Query["search"].FirstOrDefault() ?? "";
+    search = search.ToLowerInvariant();
+}
+
+The system recognizes <code>@DocsStatic.Meta.Explanations.Count</code> explanations!
+<hr>
+Search: <input type="text" id="boxysearchy" placeholder="Search...">
+<script type="text/javascript">document.getElementById('boxysearchy').addEventListener('keydown', function(e) { if (!e)  { var e = window.event; } if (e.keyCode == 13) { document.location.href = '?search=' + document.getElementById('boxysearchy').value; } }, false);</script>
+@{
+    IEnumerable<ScriptExplanation> exps = DocsStatic.Meta.Explanations.OrderBy((c) => c.Name).OrderBy((c) => c.Group);
+    string prev = "";
+    foreach (ScriptExplanation exp in exps)
+    {
+        if (exp.Name.ToLowerInvariant().Contains(search))
+        {
+            if (exp.Group != prev)
+            {
+                prev = exp.Group;
+                <hr>
+            }
+            <span class="potato_unused"><br><a href="#exp_@exp.Name">@exp.Name</a> (@exp.Group)</span>
+        }
+    }
+    string hl = DocsStatic.Config["highlight"];
+    foreach (ScriptExplanation exp in exps)
+    {
+        if (!exp.Name.ToLowerInvariant().Contains(search))
+        {
+            continue;
+        }
+        @DocsStatic.SECTION_SEPARATOR
+        <a id="exp_@exp.Name" href="#exp_@exp.Name">@exp.Name</a>
+        <table class="meta">
+            <tr><td class="small">@exp.Group Explanation</td><td>@exp.Name</td></tr>
+            <tr><td class="small">Source</td><td>@exp.SourceLocation</td></tr>
+            <tr><td class="small">Required Addon(s)</td><td>@exp.Addon</td></tr>
+            <tr><td class="small">Description</td><td>@exp.GetDescription()</td></tr>
+            @for (int i = 0; i < exp.Notes.Count; i++)
+            {
+                <tr><td class="small">Note</td><td>@exp.Notes[i]</td></tr>
+            }
+            @for (int i = 0; i < exp.Warnings.Count; i++)
+            {
+                <tr><td class="small">Warning</td><td><span class="meta_warning">@exp.Warnings[i]</span></td></tr>
+            }
+        </table>
+    }
+}

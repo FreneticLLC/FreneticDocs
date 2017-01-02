@@ -17,23 +17,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace FreneticDocs.Models
 {
-    public class ScriptEvent
+    public class ScriptExplanation
     {
-        public string[] EventNames;
-
-        public string Updated;
+        public string Name;
 
         public string Group;
 
-        public bool Cancellable;
-
-        public string Triggers;
-
-        public string Context;
-
-        public string Determinations;
-
-        public List<string> Switches;
+        public string Description;
 
         public string Addon;
 
@@ -48,38 +38,45 @@ namespace FreneticDocs.Models
             return input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
         }
 
-        public HtmlString GetContext()
-        {
-            return new HtmlString(Escape(Context).Replace("\n", "\n<br>"));
-        }
+        const string S_START = "&lt;@code&gt;";
 
-        public HtmlString GetDeterminations()
+        const string S_END = "&lt;@/code&gt;";
+
+        public HtmlString GetDescription()
         {
-            return new HtmlString(Escape(Determinations).Replace("\n", "\n<br>"));
+            string t = Escape(Description).Replace("\n", "\n<br>");
+            // .Replace("&lt;@code&gt;", "<pre class=\"brush: " + hl + "\">").Replace("&lt;@/code&gt;", "</pre>")
+            int ind = t.IndexOf(S_START);
+            while (ind >= 0)
+            {
+                string pref = t.Substring(0, ind);
+                string rest = t.Substring(ind + S_START.Length);
+                int endind = rest.IndexOf(S_END);
+                if (endind >= 0)
+                {
+                    string mid = rest.Substring(0, endind);
+                    string end = rest.Substring(endind + S_END.Length);
+                    t = pref + "<pre class=\"brush: " + DocsStatic.Config["highlight"] + "\">" + mid.Replace("<br>", "") + "</pre>" + end;
+                    ind = t.IndexOf("&lt;@code&gt;");
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return new HtmlString(t);
         }
 
         public static string[] TAGBits = new string[] {
-            "events", "updated", "group", "cancellable", "triggers", "context", "determinations", "switch", "addon", "warning", "note"
+            "name", "group", "description", "addon", "warning", "note"
         };
 
-        public ScriptEvent(Dictionary<string, List<StringBuilder>> opts, string source)
+        public ScriptExplanation(Dictionary<string, List<StringBuilder>> opts, string source)
         {
-            EventNames = opts["events"][0].ToString().Trim().Split('\n');
-            Updated = opts["updated"][0].ToString();
+            Name = opts["name"][0].ToString();
             Group = opts["group"][0].ToString();
-            Cancellable = opts.ContainsKey("cancellable") ? opts["cancellable"][0].ToString().ToLowerInvariant() == "true" : false;
-            Triggers = opts["triggers"][0].ToString();
-            Context = opts["context"][0].ToString().Trim();
-            Determinations = opts["determinations"][0].ToString().Trim();
+            Description = opts["description"][0].ToString().Trim();
             Addon = opts.ContainsKey("addon") ? opts["addon"][0].ToString() : "None";
-            Switches = new List<string>();
-            if (opts.ContainsKey("switch"))
-            {
-                foreach (StringBuilder sb in opts["switch"])
-                {
-                    Switches.Add(sb.ToString());
-                }
-            }
             Warnings = new List<string>();
             if (opts.ContainsKey("warning"))
             {
@@ -101,7 +98,7 @@ namespace FreneticDocs.Models
             {
                 if (!TAGBits.Contains(key))
                 {
-                    Console.WriteLine("Bad event meta part: " + key + " for " + EventNames[0] + " in " + source);
+                    Console.WriteLine("Bad explanation meta part: " + key + " for " + Name + " in " + source);
                 }
             }
         }
