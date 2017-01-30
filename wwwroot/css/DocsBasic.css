@@ -21,8 +21,7 @@ body
 .header
 {
     position: relative;
-    /* Height: About logo size (100px) + font-size (16px) plus border-bottom-radius (15px) */
-    height: 131px;
+    height: 160px;
     width: 90%;
     left: 5%;
     border-bottom-left-radius: 15px;
@@ -168,6 +167,13 @@ table.meta tr td
 {
     position: absolute;
     top: 25px;
+    width: 100%;
+    font-weight: bold;
+}
+.nav-bar2
+{
+    position: absolute;
+    top: 60px;
     width: 100%;
     font-weight: bold;
 }
