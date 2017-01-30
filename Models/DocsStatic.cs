@@ -48,6 +48,8 @@ namespace FreneticDocs.Models
 
         public List<ScriptTag> Tags = new List<ScriptTag>();
 
+        public List<ScriptTagBase> TagBases = new List<ScriptTagBase>();
+
         public List<ScriptEvent> Events = new List<ScriptEvent>();
 
         public List<ScriptExplanation> Explanations = new List<ScriptExplanation>();
@@ -86,6 +88,10 @@ namespace FreneticDocs.Models
                                 else if (type == "tag")
                                 {
                                     Tags.Add(new ScriptTag(opts, linesource));
+                                }
+                                else if (type == "tagbase")
+                                {
+                                    TagBases.Add(new ScriptTagBase(opts, linesource));
                                 }
                                 else if (type == "event")
                                 {

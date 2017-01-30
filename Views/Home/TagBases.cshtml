@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Commands";
+    DocsInit init = (DocsInit)ViewData["init"];
+    string search = init.Request.Query["search"].FirstOrDefault() ?? "";
+    search = search.ToLowerInvariant();
+}
+
+The system recognizes <code>@DocsStatic.Meta.TagBases.Count</code> tagbases!
+<hr>
+Search: <input type="text" id="boxysearchy" placeholder="Search...">
+<script type="text/javascript">document.getElementById('boxysearchy').addEventListener('keydown', function(e) { if (!e)  { var e = window.event; } if (e.keyCode == 13) { document.location.href = '?search=' + document.getElementById('boxysearchy').value; } }, false);</script>
+@{
+    IEnumerable<ScriptTagBase> tagbases = DocsStatic.Meta.TagBases.OrderBy((c) => c.Base).OrderBy((c) => c.Group);
+    string prev = "";
+    foreach (ScriptTagBase tagbase in tagbases)
+    {
+        if (tagbase.Base.ToLowerInvariant().Contains(search))
+        {
+            if (tagbase.Group != prev)
+            {
+                prev = tagbase.Group;
+                <hr>
+            }
+            <span class="potato_unused"><br><a href="#tagbase_@tagbase.Base">@tagbase.Base</a> (@tagbase.Group)</span>
+        }
+    }
+    string hl = DocsStatic.Config["highlight"];
+    foreach (ScriptTagBase tagbase in tagbases)
+    {
+        if (!tagbase.Base.Contains(search))
+        {
+            continue;
+        }
+        @DocsStatic.SECTION_SEPARATOR
+        <a id="tagbase_@tagbase.Base" href="#tagbase_@tagbase.Base">@tagbase.Base</a>
+        <table class="meta">
+            <tr><td class="small">@tagbase.Group Tag Base</td><td>@tagbase.Base</td></tr>
+            <tr><td class="small">Source</td><td>@tagbase.SourceLocation</td></tr>
+            <tr><td class="small">Required Addon(s)</td><td>@tagbase.Addon</td></tr>
+            <tr><td class="small">Modifier Is Optional?</td><td>@tagbase.ModifierOptional</td></tr>
+            <tr><td class="small">Returns</td><td>@tagbase.Returns</td></tr>
+            <tr><td class="small">ReturnType</td><td>@tagbase.ReturnType</td></tr>
+            @for (int i = 0; i < tagbase.Notes.Count; i++)
+            {
+                <tr><td class="small">Note</td><td>@tagbase.Notes[i]</td></tr>
+            }
+            @for (int i = 0; i < tagbase.Warnings.Count; i++)
+            {
+                <tr><td class="small">Warning</td><td><span class="meta_warning">@tagbase.Warnings[i]</span></td></tr>
+            }
+        </table>
+    }
+}
