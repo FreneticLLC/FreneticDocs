@@ -1,0 +1,52 @@
+@{
+    ViewData["Title"] = "Objects";
+    DocsInit init = (DocsInit)ViewData["init"];
+    string search = init.Request.Query["search"].FirstOrDefault() ?? "";
+    search = search.ToLowerInvariant();
+}
+
+The system recognizes <code>@DocsStatic.Meta.Objects.Count</code> object types!
+<hr>
+Search: <input type="text" id="boxysearchy" placeholder="Search...">
+<script type="text/javascript">document.getElementById('boxysearchy').addEventListener('keydown', function(e) { if (!e)  { var e = window.event; } if (e.keyCode == 13) { document.location.href = '?search=' + document.getElementById('boxysearchy').value; } }, false);</script>
+@{
+    IEnumerable<ScriptObject> objects = DocsStatic.Meta.Objects.OrderBy((c) => c.Type).OrderBy((c) => c.Group);
+    string prev = "";
+    foreach (ScriptObject obj in objects)
+    {
+        if (obj.Type.ToLowerInvariant().Contains(search))
+        {
+            if (obj.Group != prev)
+            {
+                prev = obj.Group;
+                <hr>
+            }
+            <span class="potato_unused"><br><a href="#obj_@obj.Type">@obj.Type</a> (@obj.Group)</span>
+        }
+    }
+    string hl = DocsStatic.Config["highlight"];
+    foreach (ScriptObject obj in objects)
+    {
+        if (!obj.Type.Contains(search))
+        {
+            continue;
+        }
+        @DocsStatic.SECTION_SEPARATOR
+        <a id="obj_@obj.Type" href="#obj_@obj.Type">@obj.Type</a>
+        <table class="meta">
+            <tr><td class="small">@obj.Group Tag Base</td><td>@obj.Type</td></tr>
+            <tr><td class="small">Source</td><td>@obj.SourceLocation</td></tr>
+            <tr><td class="small">Required Addon(s)</td><td>@obj.Addon</td></tr>
+            <tr><td class="small">Description</td><td>@obj.Description</td></tr>
+            <tr><td class="small">SubType</td><td>@obj.SubType</td></tr>
+            @for (int i = 0; i < obj.Notes.Count; i++)
+            {
+                <tr><td class="small">Note</td><td>@obj.Notes[i]</td></tr>
+            }
+            @for (int i = 0; i < obj.Warnings.Count; i++)
+            {
+                <tr><td class="small">Warning</td><td><span class="meta_warning">@obj.Warnings[i]</span></td></tr>
+            }
+        </table>
+    }
+}
