@@ -17,8 +17,42 @@ using Microsoft.AspNetCore.Http;
 
 namespace FreneticDocs.Models
 {
-    public class ScriptEvent
+    public class ScriptEvent : ScriptData
     {
+        public override string GetName()
+        {
+            return EventNames[0];
+        }
+
+        public override string GetDataType()
+        {
+            return "Events";
+        }
+
+        public override string GetSearchables()
+        {
+            String t = "";
+            foreach (string s in EventNames)
+            {
+                t += s + "\n";
+            }
+            t += Group + "\n" + Triggers + "\n" + Context + "\n" + Determinations + "\n";
+            foreach (string s in Switches)
+            {
+                t += s + "\n";
+            }
+            foreach (string s in Notes)
+            {
+                t += s + "\n";
+            }
+            foreach (string s in Warnings)
+            {
+                t += s + "\n";
+            }
+            t += SourceLocation + "\n" + Addon + "\n" + Group;
+            return t;
+        }
+
         public string[] EventNames;
 
         public string Updated;

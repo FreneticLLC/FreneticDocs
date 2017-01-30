@@ -51,6 +51,12 @@ namespace FreneticDocs.Controllers
             return View();
         }
 
+        public IActionResult Search()
+        {
+            ViewData["init"] = new DocsInit(Request, Response);
+            return View();
+        }
+
         public IActionResult Events()
         {
             ViewData["init"] = new DocsInit(Request, Response);

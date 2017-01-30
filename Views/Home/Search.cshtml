@@ -1,0 +1,52 @@
+@{
+    ViewData["Title"] = "Commands";
+    DocsInit init = (DocsInit)ViewData["init"];
+    string search = init.Request.Query["search"].FirstOrDefault() ?? "";
+    search = search.ToLowerInvariant();
+}
+
+The system recognizes <code>@DocsStatic.Meta.Searchable.Count</code> searchable items!
+<hr>
+Search: <input type="text" id="boxysearchy" placeholder="Search...">
+<script type="text/javascript">document.getElementById('boxysearchy').addEventListener('keydown', function(e) { if (!e)  { var e = window.event; } if (e.keyCode == 13) { document.location.href = '?search=' + document.getElementById('boxysearchy').value; } }, false);</script>
+@{
+    if (search.Length == 0)
+    {
+        <span class="ignoreme">
+            <hr>
+            Search a keyword above!
+        </span>
+    }
+    else
+    {
+        <span class="ignoreme">Results:</span>
+        List<KeyValuePair<string, List<ScriptData>>> searches = DocsStatic.Meta.Search(search);
+        int shown = 0;
+        foreach (KeyValuePair<string, List<ScriptData>> set in searches)
+        {
+            if (set.Value.Count > 0)
+            {
+                    if (shown > 30)
+                    {
+                        break;
+                    }
+                <span class="ignoreme">
+                    @DocsStatic.SECTION_SEPARATOR
+                    @set.Key Matches:
+                </span>
+                foreach (ScriptData sd in set.Value)
+                {
+                    if (shown > 30)
+                    {
+                        break;
+                    }
+                    <span class="ignoreme">
+                        <br><hr>
+                        <a href="/Home/@sd.GetDataType()?search=@sd.GetName()">@sd.GetDataType(): @sd.GetName()</a>
+                    </span>
+                    shown++;
+                }
+            }
+        }
+    }
+}

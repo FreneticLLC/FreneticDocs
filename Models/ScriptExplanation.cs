@@ -17,8 +17,33 @@ using Microsoft.AspNetCore.Http;
 
 namespace FreneticDocs.Models
 {
-    public class ScriptExplanation
+    public class ScriptExplanation : ScriptData
     {
+        public override string GetName()
+        {
+            return Name;
+        }
+
+        public override string GetDataType()
+        {
+            return "Explanations";
+        }
+
+        public override string GetSearchables()
+        {
+            String t = Description + "\n";
+            foreach (string s in Notes)
+            {
+                t += s + "\n";
+            }
+            foreach (string s in Warnings)
+            {
+                t += s + "\n";
+            }
+            t += SourceLocation + "\n" + Addon + "\n" + Group;
+            return t;
+        }
+
         public string Name;
 
         public string Group;
