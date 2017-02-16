@@ -11,7 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="**\*.cs" />
     <EmbeddedResource Include="**\*.resx" />
     <EmbeddedResource Include="compiler\resources\**\*" />
     <Content Include="wwwroot\**\*;**\*.cshtml;appsettings.json;web.config">
@@ -20,9 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETCore.App">
-      <Version>1.0.1</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies">
       <Version>1.0.0</Version>
     </PackageReference>
