@@ -1,0 +1,43 @@
+@{
+    ViewData["Title"] = "Reload | Admin";
+    DocsInit init = (DocsInit)ViewData["init"];
+}
+
+@{
+    if (init.IsPost())
+    {
+        try
+        {
+            string postid = init.GetPostData()["postid"][0] ?? "";
+            string pw = init.GetPostData()["reload_password"][0] ?? "";
+            if (postid != "reload_admin")
+            {
+                <span>That is not quite right!</span>
+            }
+            else if (pw != DocsStatic.Config["reload_pw"])
+            {
+                <span>That is not quite right!</span>
+            }
+            else
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    DocsStatic.Meta = Startup.LoadMeta();
+                });
+                <span>Reloading...</span>
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            <span>That is very not right!</span>
+        }
+    }
+}
+
+<form name="reload" action="/Admin/Reload" method="POST">
+<input type="hidden" name="postid" value="reload_admin">
+Reload Password: <input type="password" name="reload_password" style="width:500px;" placeholder="Reload Password..." value="" />
+<br>
+<input type="submit" value="Trigger Reload Sequence">
+</form>

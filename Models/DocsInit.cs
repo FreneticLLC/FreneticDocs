@@ -18,5 +18,15 @@ namespace FreneticDocs.Models
             Request = htr;
             Response = hres;
         }
+
+        public bool IsPost()
+        {
+            return Request.Method == "POST";
+        }
+
+        public IFormCollection GetPostData()
+        {
+            return Request.Form;
+        }
     }
 }

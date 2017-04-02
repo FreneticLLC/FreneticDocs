@@ -15,7 +15,7 @@ namespace FreneticDocs
 {
     public class Startup
     {
-        public DocsMeta LoadMeta()
+        public static DocsMeta LoadMeta()
         {
             Console.WriteLine("Load meta...");
             DocsMeta meta = new DocsMeta();
