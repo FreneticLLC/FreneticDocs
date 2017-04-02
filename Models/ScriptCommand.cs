@@ -62,6 +62,8 @@ namespace FreneticDocs.Models
 
         public string Description;
 
+        public List<string> Nameds;
+
         public string Escape(string input)
         {
             return input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
@@ -87,7 +89,7 @@ namespace FreneticDocs.Models
         public List<string> Saves;
 
         public static string[] CMDBits = new string[] {
-            "name", "arguments", "short", "updated", "group", "procedural", "addon", "minimum", "maximum", "description", "example", "warning", "note", "tag", "save"
+            "name", "arguments", "short", "updated", "group", "procedural", "addon", "minimum", "maximum", "description", "example", "warning", "note", "tag", "save", "named"
         };
 
         public ScriptCommand(Dictionary<string, List<StringBuilder>> opts, string source)
@@ -106,6 +108,14 @@ namespace FreneticDocs.Models
             foreach (StringBuilder sb in opts["example"])
             {
                 Examples.Add(sb.ToString());
+            }
+            Nameds = new List<string>();
+            if (opts.ContainsKey("named"))
+            {
+                foreach (StringBuilder sb in opts["named"])
+                {
+                    Nameds.Add(sb.ToString());
+                }
             }
             Warnings = new List<string>();
             if (opts.ContainsKey("warning"))

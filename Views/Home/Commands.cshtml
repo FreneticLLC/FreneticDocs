@@ -39,6 +39,10 @@ Search: <input type="text" id="boxysearchy" placeholder="Search...">
             <tr><td class="small">Required Addon(s)</td><td>@cmd.Addon</td></tr>
             <tr><td class="small">Arguments</td><td>@cmd.Arguments</td></tr>
             <tr><td class="small">Argument Limits</td><td>From @cmd.Minimum to @cmd.Maximum arguments.</td></tr>
+            @for (int i = 0; i < cmd.Nameds.Count; i++)
+            {
+                <tr><td class="small">Named Arg</td><td>@cmd.Nameds[i]</td></tr>
+            }
             <tr><td class="small">Short Description</td><td>@cmd.Short</td></tr>
             <tr><td class="small">Last Updated</td><td>@cmd.Updated</td></tr>
             <tr><td class="small">Is <a href="/Home/Explanations?search=Procedural">Procedural</a>?</td><td>@cmd.Procedural</td></tr>
