@@ -10,8 +10,11 @@ namespace FreneticDocs
 {
     public class Program
     {
+        public static string[] Args;
+
         public static void Main(string[] args)
         {
+            Args = args;
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
             var host = new WebHostBuilder()

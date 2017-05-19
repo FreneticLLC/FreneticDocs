@@ -9,6 +9,8 @@ namespace FreneticDocs.Models
 {
     public static class DocsStatic
     {
+        public static DiscordBot DiscBot;
+
         public static Dictionary<string, string> Config = new Dictionary<string, string>();
 
         public static HtmlString SECTION_SEPARATOR = new HtmlString("</div><div class=\"section\">");

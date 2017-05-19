@@ -68,6 +68,10 @@ namespace FreneticDocs
         public Startup(IHostingEnvironment env)
         {
             DocsStatic.Meta = LoadMeta();
+            if (DocsStatic.Config.ContainsKey("discord_bot") && DocsStatic.Config["discord_bot"].ToLowerInvariant() != "none")
+            {
+                DocsStatic.DiscBot = new DiscordBot(DocsStatic.Config["discord_bot"], Program.Args);
+            }
 
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
