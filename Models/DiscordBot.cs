@@ -156,6 +156,8 @@ namespace FreneticDocs.Models
                 }
                 return Task.CompletedTask;
             };
+            Console.WriteLine("Discord bot logging in...");
+            Client.LoginAsync(TokenType.Bot, code.Trim()).Wait();
             Console.WriteLine("Discord bot loading...");
             Client.StartAsync().Wait();
         }
