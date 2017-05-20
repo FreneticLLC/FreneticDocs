@@ -35,7 +35,10 @@ namespace FreneticDocs.Models
                     continue;
                 }
                 resBuild.Append(mesdat[i]).Append(" ");
-                cmds.Add(mesdat[i]);
+                if (mesdat[i].Length > 0)
+                {
+                    cmds.Add(mesdat[i]);
+                }
             }
             if (cmds.Count == 0)
             {
@@ -57,7 +60,7 @@ namespace FreneticDocs.Models
         }
 
         public string CmdsHelp = 
-                "`help`, `denizen`, `getstarted` "
+                "`help`, `denizen`, `getstarted`, `command`, "
                 + "...";
 
         public void CMD_Help(string[] cmds, SocketMessage message)
@@ -67,6 +70,7 @@ namespace FreneticDocs.Models
 
         public void CMD_GetStarted(string[] cmds, SocketMessage message)
         {
+            // TODO: Generic this via config.
             message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Hey! Currently your best hope at getting started with Denizen2 "
                     + "is just talking to us here on Discord! We're working on tutorial videos, which will be available at "
                     + "https://forum.denizenscript.com/viewtopic.php?f=12&t=57").Wait();
@@ -74,9 +78,10 @@ namespace FreneticDocs.Models
 
         public void CMD_Denizen(string[] cmds, SocketMessage message)
         {
+            // TODO: Generic this via config.
             EmbedBuilder bed = new EmbedBuilder();
             EmbedAuthorBuilder auth = new EmbedAuthorBuilder();
-            auth.Name = "Denizen Script";
+            auth.Name = "Denizen Script Info";
             auth.IconUrl = Client.CurrentUser.GetAvatarUrl();
             auth.Url = "https://denizenscript.com";
             bed.Author = auth;
@@ -84,9 +89,58 @@ namespace FreneticDocs.Models
             bed.Title = "Denizen Scripting Engine";
             bed.Description = "The Denizen Scripting Engine is a powerful script system primarily used for writing complex Minecraft mods.";
             bed.AddField((efb) => efb.WithName("How do I get started using this system?")
-                    .WithValue("@ me (" + Client.CurrentUser.Username + ") with the message: getstarted"));
+                    .WithValue("To get started, please @ me (" + Client.CurrentUser.Username + ") with the message: getstarted"));
             bed.Footer = new EmbedFooterBuilder().WithIconUrl(auth.IconUrl).WithText("Copyright (C) Denizen Script Team");
             message.Channel.SendMessageAsync(POSITIVE_PREFIX, embed: bed.Build()).Wait();
+        }
+
+        void OutputMeta(SocketMessage src, string type, string url, string name, string shortinfo, List<KeyValuePair<string, string>> fields)
+        {
+            EmbedBuilder bed = new EmbedBuilder();
+            EmbedAuthorBuilder auth = new EmbedAuthorBuilder();
+            auth.Name = "Meta Docs: " + type;
+            auth.IconUrl = Client.CurrentUser.GetAvatarUrl();
+            auth.Url = DocsStatic.Config["mainurl"] + url + name;
+            bed.Author = auth;
+            bed.Color = new Color(0x00, 0xAA, 0xFF);
+            bed.Title = type + ": " + name;
+            bed.Description = shortinfo;
+            foreach (KeyValuePair<string, string> pair in fields)
+            {
+                bed.AddField((efb) => efb.WithName(pair.Key).WithValue(pair.Value).WithIsInline(true));
+            }
+            bed.Footer = new EmbedFooterBuilder().WithIconUrl(auth.IconUrl).WithText("Click the title of this box for more information...");
+            src.Channel.SendMessageAsync(POSITIVE_PREFIX, embed: bed.Build()).Wait();
+        }
+
+        public void CMD_Command(string[] cmds, SocketMessage message)
+        {
+            string arg = cmds[0].ToLowerInvariant();
+            IEnumerable<ScriptCommand> res = DocsStatic.Meta.Commands.Where((c) => c.Name.Contains(arg));
+            ScriptCommand cmdLikely = res.FirstOrDefault();
+            if (cmdLikely == null)
+            {
+                    message.Channel.SendMessageAsync(NEGATIVE_PREFIX + "That's an unknown command!");
+            }
+            if (res.Count() > 1)
+            {
+                ScriptCommand exact = DocsStatic.Meta.Commands.Where((c) => c.Name == arg).FirstOrDefault();
+                if (exact == null)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    foreach (ScriptCommand cmd in res)
+                    {
+                        sb.Append("`").Append(cmd.Name).Append("`, ");
+                    }
+                    message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Found " + res.Count() + " possible matches: " + sb.ToString().Substring(0, sb.Length - 2));
+                }
+                cmdLikely = exact;
+            }
+            List<KeyValuePair<string, string>> fields = new List<KeyValuePair<string, string>>()
+            {
+                new KeyValuePair<string, string>("Arguments", cmdLikely.Arguments)
+            };
+            OutputMeta(message, "Command", "/Home/Commands/?search=" + cmdLikely.Name, cmdLikely.Name, cmdLikely.Short, fields);
         }
 
         public void DefaultCommands()
@@ -111,6 +165,9 @@ namespace FreneticDocs.Models
             CommonCmds["gs"] = CMD_GetStarted;
             CommonCmds["start"] = CMD_GetStarted;
             CommonCmds["getstart"] = CMD_GetStarted;
+            CommonCmds["command"] = CMD_Command;
+            CommonCmds["cmd"] = CMD_Command;
+            CommonCmds["c"] = CMD_Command;
         }
 
         public DiscordBot(string code, string[] args)
