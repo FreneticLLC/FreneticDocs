@@ -241,3 +241,4 @@ _Pvt_Extensions
 
 # Project-Specific Files and Folders
 config/
+start.sh

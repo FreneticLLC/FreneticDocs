@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
+using System.Diagnostics;
 using Discord;
 using Discord.Net;
 using Discord.WebSocket;
@@ -60,7 +61,8 @@ namespace FreneticDocs.Models
         }
 
         public string CmdsHelp = 
-                "`help`, `denizen`, `getstarted`, `command`, "
+                "`help`, `denizen`, `getstarted`, `restart`, `reload`, `update`, "
+                + "`command`, "
                 + "...";
 
         public void CMD_Help(string[] cmds, SocketMessage message)
@@ -149,6 +151,75 @@ namespace FreneticDocs.Models
             return inp.Length > len ? inp.Substring(0, len) + "... (View Link For More)" : inp;
         }
 
+        bool IsBotCommander(SocketUser usr)
+        {
+            return (usr as SocketGuildUser).Roles.Where((role) => role.Name.ToLowerInvariant() =="botcommander").FirstOrDefault() != null;
+        }
+
+        void CMD_Update(string[] cmds, SocketMessage message)
+        {
+            // NOTE: This implies a one-guild bot. A multi-guild bot probably shouldn't have this "BotCommander" role-based verification.
+            // But under current scale, a true-admin confirmation isn't worth the bother.
+            if (!IsBotCommander(message.Author))
+            {
+                message.Channel.SendMessageAsync(NEGATIVE_PREFIX + "Nope! That's not for you!").Wait();
+                return;
+            }
+            if (!File.Exists("./update.sh"))
+            {
+                message.Channel.SendMessageAsync(NEGATIVE_PREFIX + "Nope! That's not valid for my current configuration!").Wait();
+            }
+            message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Yes, boss. updating now...").Wait();
+            Process.Start("sh", "./update.sh");
+        }
+
+        void CMD_Restart(string[] cmds, SocketMessage message)
+        {
+            // NOTE: This implies a one-guild bot. A multi-guild bot probably shouldn't have this "BotCommander" role-based verification.
+            // But under current scale, a true-admin confirmation isn't worth the bother.
+            if (!IsBotCommander(message.Author))
+            {
+                message.Channel.SendMessageAsync(NEGATIVE_PREFIX + "Nope! That's not for you!").Wait();
+                return;
+            }
+            if (!File.Exists("./start.sh"))
+            {
+                message.Channel.SendMessageAsync(NEGATIVE_PREFIX + "Nope! That's not valid for my current configuration!").Wait();
+            }
+            message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Yes, boss. Restarting now...").Wait();
+            Process.Start("sh", "./start.sh " + message.Channel.Id);
+            Task.Factory.StartNew(() =>
+            {
+                Console.WriteLine("Shutdown start...");
+                for (int i = 0; i < 15; i++)
+                {
+                    Console.WriteLine("T Minus " + (15 - i));
+                    Task.Delay(1000).Wait();
+                }
+                Console.WriteLine("Shutdown!");
+                Environment.Exit(0);
+            });
+            Client.StopAsync().Wait();
+        }
+
+        void CMD_Reload(string[] cmds, SocketMessage message)
+        {
+            // NOTE: This implies a one-guild bot. A multi-guild bot probably shouldn't have this "BotCommander" role-based verification.
+            // But under current scale, a true-admin confirmation isn't worth the bother.
+            if (!IsBotCommander(message.Author))
+            {
+                message.Channel.SendMessageAsync(NEGATIVE_PREFIX + "Nope! That's not for you!").Wait();
+                return;
+            }
+            if (!File.Exists("./update.sh"))
+            {
+                message.Channel.SendMessageAsync(NEGATIVE_PREFIX + "Nope! That's not valid for my current configuration!").Wait();
+            }
+            message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Yes, boss. reloading now...").Wait();
+            DocsStatic.Meta = Startup.LoadMeta();
+            message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Reloaded!").Wait();
+        }
+
         public void DefaultCommands()
         {
             CommonCmds["help"] = CMD_Help;
@@ -174,6 +245,9 @@ namespace FreneticDocs.Models
             CommonCmds["command"] = CMD_Command;
             CommonCmds["cmd"] = CMD_Command;
             CommonCmds["c"] = CMD_Command;
+            CommonCmds["restart"] = CMD_Restart;
+            CommonCmds["update"] = CMD_Update;
+            CommonCmds["reload"] = CMD_Reload;
         }
 
         public DiscordBot(string code, string[] args)
