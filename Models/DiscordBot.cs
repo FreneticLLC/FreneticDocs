@@ -100,14 +100,14 @@ namespace FreneticDocs.Models
             EmbedAuthorBuilder auth = new EmbedAuthorBuilder();
             auth.Name = "Meta Docs: " + type;
             auth.IconUrl = Client.CurrentUser.GetAvatarUrl();
-            auth.Url = DocsStatic.Config["mainurl"] + url + name;
+            auth.Url = DocsStatic.Config["mainurl"] + url;
             bed.Author = auth;
             bed.Color = new Color(0x00, 0xAA, 0xFF);
             bed.Title = type + ": " + name;
             bed.Description = shortinfo;
             foreach (KeyValuePair<string, string> pair in fields)
             {
-                bed.AddField((efb) => efb.WithName(pair.Key).WithValue(pair.Value).WithIsInline(true));
+                bed.AddField((efb) => efb.WithName(pair.Key).WithValue(pair.Value));
             }
             bed.Footer = new EmbedFooterBuilder().WithIconUrl(auth.IconUrl).WithText("Click the title of this box for more information...");
             src.Channel.SendMessageAsync(POSITIVE_PREFIX, embed: bed.Build()).Wait();
@@ -138,9 +138,15 @@ namespace FreneticDocs.Models
             }
             List<KeyValuePair<string, string>> fields = new List<KeyValuePair<string, string>>()
             {
+                new KeyValuePair<string, string>("Description", CapOff(cmdLikely.Description, 256)),
                 new KeyValuePair<string, string>("Arguments", cmdLikely.Arguments)
             };
             OutputMeta(message, "Command", "/Home/Commands/?search=" + cmdLikely.Name, cmdLikely.Name, cmdLikely.Short, fields);
+        }
+
+        public string CapOff(string inp, int len)
+        {
+            return inp.Length > len ? inp.Substring(0, len) + "... (View Link For More)" : inp;
         }
 
         public void DefaultCommands()
