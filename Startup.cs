@@ -26,6 +26,7 @@ namespace FreneticDocs
             }
             Console.WriteLine("Load meta...");
             DocsMeta meta = new DocsMeta();
+            meta.Loaded = DocsStatic.DateNow();
             DocsStatic.Config.Clear();
             string[] lines = File.ReadAllText("./config/docs.cfg").Replace('\r', '\n').Split('\n');
             foreach (string l in lines)
