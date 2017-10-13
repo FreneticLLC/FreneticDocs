@@ -1,5 +1,6 @@
 @{
     ViewData["Title"] = "Objects";
+    ViewData["Description"] = "Object search";
     DocsInit init = (DocsInit)ViewData["init"];
     string search = init.Request.Query["search"].FirstOrDefault() ?? "";
     search = search.ToLowerInvariant();

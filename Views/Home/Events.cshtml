@@ -1,5 +1,6 @@
 @{
     ViewData["Title"] = "Events";
+    ViewData["Description"] = "Event search";
     DocsInit init = (DocsInit)ViewData["init"];
     string search = init.Request.Query["search"].FirstOrDefault() ?? "";
     search = search.ToLowerInvariant();

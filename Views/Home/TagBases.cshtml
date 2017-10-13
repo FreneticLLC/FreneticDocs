@@ -1,5 +1,6 @@
 @{
     ViewData["Title"] = "TagBases";
+    ViewData["Description"] = "TagBase search";
     DocsInit init = (DocsInit)ViewData["init"];
     string search = init.Request.Query["search"].FirstOrDefault() ?? "";
     search = search.ToLowerInvariant();

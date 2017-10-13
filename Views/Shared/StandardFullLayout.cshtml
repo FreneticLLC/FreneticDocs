@@ -4,9 +4,13 @@
 @{
     DocsInit init = (DocsInit)ViewData["init"];
     string Title = DocsStatic.Config["title"];
+	string PageDescription = ViewData["Description"] + " | " + Title;
 }
     <meta charset="utf-8" />
     <title>@ViewData["Title"] | @Title</title>
+	<meta name="description" content="@PageDescription">
+	<meta name="og:description" content="@PageDescription">
+	<meta name="twitter:description" content="@PageDescription">
     <link rel="stylesheet" href="/css/DocsBasic.min.css?vary=1" type="text/css" />
     <link rel="stylesheet" href="/css/shCoreMidnight.min.css?vary=1" type="text/css" />
     <link rel="stylesheet" href="/css/shThemeMidnight.min.css?vary=1" type="text/css" />
