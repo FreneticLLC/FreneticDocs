@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using FreneticDocs.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Html;
 
 namespace FreneticDocs
 {
@@ -17,6 +19,11 @@ namespace FreneticDocs
     {
         public static DocsMeta LoadMeta()
         {
+            Console.WriteLine("Load homepage...");
+            if (File.Exists("./config/docs_homepage.html"))
+            {
+                DocsStatic.INTRO_PAGE = new HtmlString(File.ReadAllText("./config/docs_homepage.html"));
+            }
             Console.WriteLine("Load meta...");
             DocsMeta meta = new DocsMeta();
             DocsStatic.Config.Clear();

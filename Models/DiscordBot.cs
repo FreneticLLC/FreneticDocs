@@ -171,6 +171,7 @@ namespace FreneticDocs.Models
             }
             message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Yes, boss. updating now...").Wait();
             Process.Start("sh", "./update.sh");
+            // TODO: Wait-For-Exit then report success?
         }
 
         void CMD_Restart(string[] cmds, SocketMessage message)

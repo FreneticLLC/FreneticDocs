@@ -27,6 +27,11 @@ These docs are for legacy (comment structured) docs!
 - Connect to server address (or `localhost`) at port `8051`.
 - That's all, folks!
 
+### Other things to configure
+
+- Create a `config/docs_homepage.html` to contain homepage HTML data.
+- Create your own docs logo and favicon
+
 ### Editing
 
 - Primary editing should be done in VS Code. Requires OmniSharp-VS Code 1.6.0-beta6 or higher.

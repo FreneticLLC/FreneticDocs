@@ -21,6 +21,8 @@ namespace FreneticDocs.Models
 
         public static HtmlString BIG_X = new HtmlString("&#10008;");
 
+        public static HtmlString INTRO_PAGE = new HtmlString("Docs need a home page! ./config/docs_homepage.html");
+
         public static string Pad2Z(int input)
         {
             if (input < 10)
