@@ -61,13 +61,13 @@ a:link
 {
     color: #00AA00;
 }
-a:hover
-{
-    color: #00FF00;
-}
 a:visited
 {
     color: #007700;
+}
+a:hover
+{
+    color: #00FF00;
 }
 .content
 {
