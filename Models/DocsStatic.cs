@@ -102,8 +102,11 @@ namespace FreneticDocs.Models
 
         public List<ScriptData> Searchable = new List<ScriptData>();
 
+        public string Loaded = "?";
+
         public List<KeyValuePair<string, List<ScriptData>>> Search(string s)
         {
+            Loaded = DocsStatic.DateNow();
             s = s.ToLowerInvariant();
             List<KeyValuePair<string, List<ScriptData>>> toret = new List<KeyValuePair<string, List<ScriptData>>>();
             List<ScriptData> exact = new List<ScriptData>();

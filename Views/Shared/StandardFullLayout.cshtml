@@ -47,7 +47,7 @@
             string mainurl = DocsStatic.Config["mainurl"];
             string adaptedurl = mainurl + (init == null ? "/" : init.Request.Path.ToString());
         }
-        Page Retrieved: <code>@utcnow</code>
+        Page Retrieved: <code>@utcnow</code> | System reload: <code>@DocsStatic.Meta.Loaded</code>
         <br>Standard URL to this page: <a href="@adaptedurl">@adaptedurl</a>
     </div>
 
