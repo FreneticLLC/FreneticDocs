@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
 @{
     DocsInit init = (DocsInit)ViewData["init"];
     string Title = DocsStatic.Config["title"];
 	string PageDescription = ViewData["Description"] + " | " + Title;
 }
+<!DOCTYPE html>
+<html>
+<head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"] | @Title</title>
 	<meta name="description" content="@PageDescription">
