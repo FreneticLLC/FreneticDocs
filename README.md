@@ -31,6 +31,7 @@ These docs are for legacy (comment structured) docs!
 
 - Create a `config/docs_homepage.html` to contain homepage HTML data.
 - Create your own docs logo and favicon
+- Edit `start.sh`, `launch.sh` as needed to allow proper auto-restarting, or configure the execution to be a service.
 
 ### Editing
 
