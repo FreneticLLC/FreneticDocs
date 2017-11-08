@@ -168,6 +168,7 @@ namespace FreneticDocs.Models
             if (!File.Exists("./update.sh"))
             {
                 message.Channel.SendMessageAsync(NEGATIVE_PREFIX + "Nope! That's not valid for my current configuration!").Wait();
+                return;
             }
             message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Yes, boss. updating now...").Wait();
             Process.Start("sh", "./update.sh");
@@ -186,6 +187,7 @@ namespace FreneticDocs.Models
             if (!File.Exists("./start.sh"))
             {
                 message.Channel.SendMessageAsync(NEGATIVE_PREFIX + "Nope! That's not valid for my current configuration!").Wait();
+                return;
             }
             message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Yes, boss. Restarting now...").Wait();
             Process.Start("sh", "./start.sh " + message.Channel.Id);
@@ -211,10 +213,6 @@ namespace FreneticDocs.Models
             {
                 message.Channel.SendMessageAsync(NEGATIVE_PREFIX + "Nope! That's not for you!").Wait();
                 return;
-            }
-            if (!File.Exists("./update.sh"))
-            {
-                message.Channel.SendMessageAsync(NEGATIVE_PREFIX + "Nope! That's not valid for my current configuration!").Wait();
             }
             message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Yes, boss. reloading now...").Wait();
             DocsStatic.Meta = Startup.LoadMeta();
