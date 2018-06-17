@@ -83,7 +83,18 @@ namespace FreneticDocs.Models
 
         public static Encoding Enc = new UTF8Encoding(false);
 
-        public static DocsMeta Meta = new DocsMeta();
+        public static DocsMeta MetaInternal = new DocsMeta();
+
+        public static DocsMeta Meta
+        {
+            get
+            {
+                lock (MetaInternal)
+                {
+                    return MetaInternal;
+                }
+            }
+        }
     }
 
     public class DocsMeta

@@ -171,8 +171,12 @@ namespace FreneticDocs.Models
                 return;
             }
             message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Yes, boss. updating now...").Wait();
-            Process.Start("sh", "./update.sh");
-            // TODO: Wait-For-Exit then report success?
+            Process res = Process.Start("sh", "./update.sh");
+            Task.Factory.StartNew(() =>
+            {
+                bool waitedResult = res.WaitForExit(60000);
+                message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Update process returned result: " + waitedResult + " with code " + res.ExitCode).Wait();
+            });
         }
 
         void CMD_Restart(string[] cmds, SocketMessage message)
@@ -215,7 +219,11 @@ namespace FreneticDocs.Models
                 return;
             }
             message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Yes, boss. reloading now...").Wait();
-            DocsStatic.Meta = Startup.LoadMeta();
+            DocsMeta metaTemp = Startup.LoadMeta();
+            lock (DocsStatic.MetaInternal)
+            {
+                DocsStatic.MetaInternal = metaTemp;
+            }
             message.Channel.SendMessageAsync(POSITIVE_PREFIX + "Reloaded!").Wait();
         }
 
@@ -249,6 +257,10 @@ namespace FreneticDocs.Models
             CommonCmds["reload"] = CMD_Reload;
         }
 
+        public bool ConnectedOnce = false;
+
+        public bool ConnectedCurrently = false;
+
         public DiscordBot(string code, string[] args)
         {
             Console.WriteLine("Discord bot setting up...");
@@ -256,6 +268,15 @@ namespace FreneticDocs.Models
             Client = new DiscordSocketClient();
             Client.Ready += () =>
             {
+                if (StopAllLogic)
+                {
+                    return Task.CompletedTask;
+                }
+                ConnectedCurrently = true;
+                if (ConnectedOnce)
+                {
+                    return Task.CompletedTask;
+                }
                 Console.WriteLine("Args: " + args.Length);
                 if (args.Length > 0 && ulong.TryParse(args[0], out ulong a1))
                 {
@@ -263,11 +284,21 @@ namespace FreneticDocs.Models
                     Console.WriteLine("Restarted as per request in channel: " + chan.Name);
                     chan.SendMessageAsync(POSITIVE_PREFIX + "Connected and ready!").Wait();
                 }
+                ConnectedOnce = true;
                 return Task.CompletedTask;
             };
             Client.MessageReceived += (message) =>
             {
+                if (StopAllLogic)
+                {
+                    return Task.CompletedTask;
+                }
                 if (message.Author.Id == Client.CurrentUser.Id)
+                {
+                    return Task.CompletedTask;
+                }
+                LoopsSilent = 0;
+                if (message.Author.IsBot || message.Author.IsWebhook)
                 {
                     return Task.CompletedTask;
                 }
@@ -276,15 +307,7 @@ namespace FreneticDocs.Models
                     Console.WriteLine("Refused message from (" + message.Author.Username + "): (Invalid Channel: " + message.Channel.Name + "): " + message.Content);
                     return Task.CompletedTask;
                 }
-                bool mentionedMe = false;
-                foreach (SocketUser user in message.MentionedUsers)
-                {
-                    if (user.Id == Client.CurrentUser.Id)
-                    {
-                        mentionedMe = true;
-                        break;
-                    }
-                }
+                bool mentionedMe = message.MentionedUsers.Any((su) => su.Id == Client.CurrentUser.Id);
                 Console.WriteLine("Parsing message from (" + message.Author.Username + "), in channel: " + message.Channel.Name + ": " + message.Content);
                 if (mentionedMe)
                 {
@@ -292,10 +315,102 @@ namespace FreneticDocs.Models
                 }
                 return Task.CompletedTask;
             };
+            Client.Disconnected += (e) =>
+            {
+                ConnectedCurrently = false;
+                return Task.CompletedTask;
+            };
+            Console.WriteLine("Prepping monitor...");
+            Task.Factory.StartNew(() =>
+            {
+                while (true)
+                {
+                    Task.Delay(MonitorLoopTime).Wait();
+                    if (StopAllLogic)
+                    {
+                        return;
+                    }
+                    try
+                    {
+                        MonitorLoop();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex is ThreadAbortException)
+                        {
+                            throw;
+                        }
+                        Console.WriteLine("Connection monitor loop had exception: " + ex.ToString());
+                    }
+                }
+            });
             Console.WriteLine("Discord bot logging in...");
             Client.LoginAsync(TokenType.Bot, code.Trim()).Wait();
             Console.WriteLine("Discord bot loading...");
             Client.StartAsync().Wait();
+        }
+
+        public TimeSpan MonitorLoopTime = new TimeSpan(hours: 0, minutes: 1, seconds: 0);
+
+        public bool MonitorWasFailedAlready = false;
+
+        public bool StopAllLogic = false;
+
+        public void ForceRestartBot()
+        {
+            lock (MonitorLock)
+            {
+                StopAllLogic = true;
+            }
+            Task.Factory.StartNew(() =>
+            {
+                Client.StopAsync().Wait();
+            });
+            DocsStatic.DiscBot = new DiscordBot(DocsStatic.Config["discord_bot"], new string[0]);
+        }
+
+        public Object MonitorLock = new Object();
+
+        public long LoopsSilent = 0;
+
+        public long LoopsTotal = 0;
+
+        public void MonitorLoop()
+        {
+            bool isConnected;
+            lock (MonitorLock)
+            {
+                LoopsSilent++;
+                LoopsTotal++;
+                isConnected = ConnectedCurrently && Client.ConnectionState == ConnectionState.Connected;
+            }
+            if (!isConnected)
+            {
+                Console.WriteLine("Monitor detected disconnected state!");
+            }
+            if (LoopsSilent > 60)
+            {
+                Console.WriteLine("Monitor detected over an hour of silence, and is assuming a disconnected state!");
+                isConnected = false;
+            }
+            if (LoopsTotal > 60 * 12)
+            {
+                Console.WriteLine("Monitor detected that the bot has been running for over 12 hours, and will restart soon!");
+                isConnected = false;
+            }
+            if (isConnected)
+            {
+                MonitorWasFailedAlready = false;
+            }
+            else
+            {
+                if (MonitorWasFailedAlready)
+                {
+                    Console.WriteLine("Monitor is enforcing a restart!");
+                    ForceRestartBot();
+                }
+                MonitorWasFailedAlready = true;
+            }
         }
     }
 }
