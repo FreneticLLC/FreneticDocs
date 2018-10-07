@@ -261,9 +261,22 @@ namespace FreneticDocs.Models
 
         public bool ConnectedCurrently = false;
 
+        public HashSet<ulong> ValidChannels = new HashSet<ulong>(32);
+
+        public void PopulateFromConfig()
+        {
+            ValidChannels.Clear();
+            string[] channelWhitelist = DocsStatic.Config["channel_whitelist"].Split('|');
+            foreach (string channel in channelWhitelist)
+            {
+                ValidChannels.Add(ulong.Parse(channel.Trim()));
+            }
+        }
+
         public DiscordBot(string code, string[] args)
         {
             Console.WriteLine("Discord bot setting up...");
+            PopulateFromConfig();
             DefaultCommands();
             Client = new DiscordSocketClient();
             Client.Ready += () =>
@@ -305,6 +318,11 @@ namespace FreneticDocs.Models
                 if (message.Channel.Name.StartsWith("@") || !(message.Channel is SocketGuildChannel))
                 {
                     Console.WriteLine("Refused message from (" + message.Author.Username + "): (Invalid Channel: " + message.Channel.Name + "): " + message.Content);
+                    return Task.CompletedTask;
+                }
+                if (ValidChannels.Count != 0 && !ValidChannels.Contains(message.Channel.Id))
+                {
+                    Console.WriteLine("Refused message from (" + message.Author.Username + "): (Non-whitelisted Channel: " + message.Channel.Name + "): " + message.Content);
                     return Task.CompletedTask;
                 }
                 bool mentionedMe = message.MentionedUsers.Any((su) => su.Id == Client.CurrentUser.Id);

@@ -8,6 +8,10 @@ At current stage, FreneticDocs is Copyright (C) 2016-2018 Frenetic LLC, All Righ
 
 Licensing is likely to change in the future (probably MIT).
 
+### Project Identity Notice
+
+This project may be moved elsewhere (possibly to the DenizenScript page) in the near feature (it's basically just used for Denizen right now... the FreneticScript documentation format was changed entirely from this setup).
+
 ### Project Status
 
 Midway through initial development - most pages are available (though not fully complete), Discord bot is working but needs more work.
